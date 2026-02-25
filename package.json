@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "server": "json-server --watch db.json --port 4000",
+    "start:api": "node server.cjs",
     "lint": "eslint .",
     "format": "prettier . --write"
   },

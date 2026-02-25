@@ -9,10 +9,6 @@ export type PagedResponse<T> = {
   totalCount: number;
 };
 
-function buildUrl(path: string) {
-  return `${API_BASE_URL}${path}`;
-}
-
 export async function fetchTasksPage(params: {
   column: ColumnId;
   q: string;
@@ -20,26 +16,25 @@ export async function fetchTasksPage(params: {
   page: number;
   limit: number;
 }): Promise<PagedResponse<Task>> {
-  const url = new URL(buildUrl("/tasks"));
+  const url = new URL("/tasks", API_BASE_URL);
 
   url.searchParams.set("column", params.column);
   url.searchParams.set("_page", String(params.page));
   url.searchParams.set("_limit", String(params.limit));
 
-  if (params.q.trim()) {
-    url.searchParams.set("q", params.q.trim());
-  }
+  if (params.q.trim()) url.searchParams.set("q", params.q.trim());
 
   if (params.priority.length > 0) {
-    params.priority.forEach((p) => {
-      url.searchParams.append("priority", p);
-    });
+    params.priority.forEach((p) => url.searchParams.append("priority", p));
   }
 
   url.searchParams.set("_sort", "updatedAt");
   url.searchParams.set("_order", "desc");
 
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), {
+    headers: { "Content-Type": "application/json" },
+  });
+
   if (!res.ok) throw new Error(await res.text());
 
   const items = (await res.json()) as Task[];
@@ -55,7 +50,7 @@ export async function fetchTasksPage(params: {
 
 export async function createTask(input: TaskFormValues): Promise<Task> {
   const now = new Date().toISOString();
-  return apiFetch<Task>(buildUrl("/tasks"), {
+  return apiFetch<Task>("/tasks", {
     method: "POST",
     body: JSON.stringify({ ...input, createdAt: now, updatedAt: now }),
   });
@@ -63,7 +58,7 @@ export async function createTask(input: TaskFormValues): Promise<Task> {
 
 export async function updateTask(id: number, input: TaskFormValues): Promise<Task> {
   const now = new Date().toISOString();
-  return apiFetch<Task>(buildUrl(`/tasks/${id}`), {
+  return apiFetch<Task>(`/tasks/${id}`, {
     method: "PATCH",
     body: JSON.stringify({ ...input, updatedAt: now }),
   });
@@ -74,12 +69,12 @@ export async function patchTask(
   patch: Partial<Pick<Task, "column" | "priority" | "title" | "description">>,
 ): Promise<Task> {
   const now = new Date().toISOString();
-  return apiFetch<Task>(buildUrl(`/tasks/${id}`), {
+  return apiFetch<Task>(`/tasks/${id}`, {
     method: "PATCH",
     body: JSON.stringify({ ...patch, updatedAt: now }),
   });
 }
 
 export async function deleteTask(id: number): Promise<void> {
-  await apiFetch<unknown>(buildUrl(`/tasks/${id}`), { method: "DELETE" });
+  await apiFetch<unknown>(`/tasks/${id}`, { method: "DELETE" });
 }

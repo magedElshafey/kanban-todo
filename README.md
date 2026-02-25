@@ -1,51 +1,47 @@
-# Kanban ToDo Dashboard (Assessment)
+# Kanban ToDo Board
 
-A Kanban-style ToDo dashboard with **4 columns** (Backlog / In Progress / Review / Done) featuring:
-- CRUD tasks (create, update, delete)
-- Drag & drop between columns
-- Pagination / Infinite scroll **per column**
-- Global search by title/description
-- **Material UI** layout + consistent design system
-- **React Query** caching for server state
-- Local mock API using **json-server**
+A responsive Kanban-style task board with columns, drag & drop, infinite loading per column, quick priority filtering, and a streamlined task create/edit flow.
 
-## Tech
-- React + TypeScript + Vite
+## Live Demo
+
+- Production: <PUT_YOUR_DEPLOYMENT_URL_HERE>
+
+## Repository Contents
+
+- Source code of the application
+- Setup & run instructions
+- Deployment link (see above)
+
+## Tech Stack
+
+- React + TypeScript
 - MUI (Material UI)
-- @tanstack/react-query
-- Zustand (UI-only state)
-- dnd-kit (drag & drop)
-- react-hook-form + zod (forms & validation)
-- json-server (mock REST)
+- dnd-kit (Drag & Drop)
+- TanStack Query (React Query)
+- Zustand (UI state)
+- Framer Motion (micro-interactions)
+- Sonner (toasts)
+
+## Features
+
+- Kanban board with multiple columns
+- Drag & drop tasks between columns
+- Optimistic UI updates on move (with rollback on failure)
+- Infinite loading per column (IntersectionObserver)
+- Search with debounce
+- Multi-select priority filter with quick reset
+- Responsive layout (desktop & mobile)
+- Accessible UI (labels, keyboard-friendly controls where applicable)
 
 ## Getting Started
 
-### 1) Install dependencies
+### Prerequisites
+
+- Node.js (>= 18 recommended)
+- npm or pnpm or yarn
+
+### Install
+
 ```bash
 npm install
 ```
-
-### 2) Run mock API
-```bash
-npm run server
-```
-Mock API will be at: `http://localhost:4000/tasks`
-
-### 3) Run the app
-```bash
-npm run dev
-```
-App will be at: `http://localhost:5173`
-
-## Build / Deploy
-```bash
-npm run build
-npm run preview
-```
-
-## Notes (Architecture)
-- `features/tasks` contains domain logic (api + hooks + UI components).
-- Server state is handled by React Query. UI-only state (dialogs, search input) is in Zustand.
-- Each column uses `useInfiniteQuery` with `_page/_limit` for independent pagination and caching.
-- Drag & drop updates the task column via mutation with an optimistic UI update + rollback on error.
-
